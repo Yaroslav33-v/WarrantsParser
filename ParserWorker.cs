@@ -1,66 +1,62 @@
-﻿using AngleSharp.Browser;
-using AngleSharp.Html.Dom;
+﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
-using AngleSharp.Text;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WienerParserAttempt
+namespace WarrantyParser
 {
     internal class ParserWorker
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        WieneParser parser;
-        readonly HtmlLoader loader = new HtmlLoader();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly HtmlLoader _loader = new HtmlLoader();
+        private WieneParser _parser;
 
         public WieneParser Parser
         {
-            get { return parser; }
-            set { parser = value; }
+            get => _parser;
+            set => _parser = value;
         }
+
         public ParserWorker(WieneParser parser)
         {
-            this.parser = parser;
+            _parser = parser;
         }
+
         public async Task Worker()
         {
-            logger.Info("Начало работы парсера");
+            Logger.Info("Начало работы парсера");
             string csvFilePath = $"output_{DateTime.Now:yyyyMMdd}.csv";
 
             try
             {
                 using (var sw = new StreamWriter(csvFilePath, false, Encoding.UTF8))
                 {
-                    logger.Debug("Загрузка первой страницы для заголовков");
-                    string source = await loader.GetSourceByPage(1);
+                    Logger.Debug("Загрузка первой страницы для заголовков");
+                    string source = await _loader.GetSourceByPage(1);
                     IHtmlDocument document = await new HtmlParser().ParseDocumentAsync(source);
 
-                    // Заголовки
-                    var headers = parser.ParseNames(document);
-                    logger.Debug($"Найдено {headers.Length} заголовков");
+                    var headers = _parser.ParseNames(document);
+                    Logger.Debug($"Найдено {headers.Length} заголовков");
 
                     foreach (string line in headers)
                     {
                         sw.WriteLine(CsvConverter.ConvertToCsv(line));
                     }
 
-                    // Данные
-                    int pageCount = parser.FindLastPageNumber(document);
-                    logger.Info($"Всего страниц для обработки: {pageCount}");
+                    int pageCount = _parser.FindLastPageNumber(document);
+                    Logger.Info($"Всего страниц для обработки: {pageCount}");
 
                     for (int i = 1; i <= pageCount; i++)
                     {
-                        logger.Trace($"Обработка страницы {i}/{pageCount}");
-                        source = await loader.GetSourceByPage(i);
+                        Logger.Trace($"Обработка страницы {i}/{pageCount}");
+                        source = await _loader.GetSourceByPage(i);
                         document = await new HtmlParser().ParseDocumentAsync(source);
-                        var rows = parser.Parse(document);
+                        var rows = _parser.Parse(document);
 
-                        logger.Debug($"На странице {i} найдено {rows.Length} строк");
+                        Logger.Debug($"На странице {i} найдено {rows.Length} строк");
 
                         foreach (string line in rows)
                         {
@@ -68,14 +64,14 @@ namespace WienerParserAttempt
                         }
                     }
                 }
-                logger.Info($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
+                Logger.Info($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex, "Критическая ошибка в работе парсера");
-                throw;
+                Logger.Fatal(ex, "Критическая ошибка в работе парсера");
             }
         }
+
         public async Task Start()
         {
             await Worker();

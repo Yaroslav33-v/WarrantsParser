@@ -1,17 +1,15 @@
-﻿using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
+﻿using AngleSharp.Html.Dom;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WienerParserAttempt
+namespace WarrantyParser
 {
     internal class WieneParser
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+
         public string[] Parse(IHtmlDocument document)
         {
             List<string> list = new List<string>();
@@ -23,17 +21,14 @@ namespace WienerParserAttempt
 
                 foreach (var row in rows)
                 {
-                    // Получаем все ячейки (тег <td> или <th>)
                     var cells = row.QuerySelectorAll("td");
-
-                    // Собираем текст из ячеек, разделяя пробелами
                     string rowText = string.Join(" | ", cells.Select(cell => cell.TextContent.Trim()));
-
                     list.Add(rowText);
                 }
             }
             return list.ToArray();
         }
+
         public string[] ParseNames(IHtmlDocument document)
         {
             List<string> list = new List<string>();
@@ -46,6 +41,7 @@ namespace WienerParserAttempt
             }
             return list.ToArray();
         }
+
         public int FindLastPageNumber(IHtmlDocument document)
         {
             try
@@ -57,12 +53,12 @@ namespace WienerParserAttempt
                     .ToList();
 
                 int lastPage = pageLinks.Any() ? pageLinks.Max() : 1;
-                logger.Debug($"Найдено страниц: {lastPage}");
+                Logger.Debug($"Найдено страниц: {lastPage}");
                 return lastPage;
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Ошибка при определении количества страниц");
+                Logger.Error(ex, "Ошибка при определении количества страниц");
                 return 1;
             }
         }

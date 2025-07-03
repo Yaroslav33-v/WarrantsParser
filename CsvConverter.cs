@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
-namespace WienerParserAttempt
+namespace WarrantyParser
 {
     internal class CsvConverter
     {
@@ -12,16 +8,14 @@ namespace WienerParserAttempt
         {
             string[] cells = line.Split('|').Select(cell => cell.Trim()).ToArray();
 
-            // Экранируем кавычки и запятые (если они есть внутри данных)
             var escapedCells = cells.Select(cell =>
             {
                 if (cell.Contains(",") || cell.Contains("\""))
-                    return $"\"{cell.Replace("\"", "\"\"")}\""; // Экранирование кавычек
+                    return $"\"{cell.Replace("\"", "\"\"")}\"";
                 else
                     return cell;
             });
 
-            // Объединяем в CSV-строку и записываем
             return string.Join(",", escapedCells);
         }
     }

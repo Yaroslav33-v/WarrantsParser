@@ -1,44 +1,41 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace WienerParserAttempt
+namespace WarrantyParser
 {
     internal class HtmlLoader
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        readonly HttpClient client;
-        readonly string url;
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        readonly HttpClient Client;
+        readonly string Url;
 
         public HtmlLoader()
         {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "C# App");
-            url = "https://www.wienerborse.at/en/warrants/?c10952-page={CurrentPage}&per-page=50";
+            Client = new HttpClient();
+            Client.DefaultRequestHeaders.Add("User-Agent", "C# App");
+            Url = "https://www.wienerborse.at/en/warrants/?c10952-page={CurrentPage}&per-page=50";
         }
 
-        public async Task<string> GetSourceByPage(int CurrentPage)
+        public async Task<string> GetSourceByPage(int currentPage)
         {
-            logger.Trace($"Загрузка страницы {CurrentPage}");
-            string CurrentUrl = url.Replace("{CurrentPage}", CurrentPage.ToString());
+            Logger.Trace($"Загрузка страницы {currentPage}");
+            string currentUrl = Url.Replace("{CurrentPage}", currentPage.ToString());
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(CurrentUrl);
+                HttpResponseMessage response = await Client.GetAsync(currentUrl);
                 if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    logger.Debug($"Успешно загружена страница {CurrentPage}");
+                    Logger.Debug($"Успешно загружена страница {currentPage}");
                     return await response.Content.ReadAsStringAsync();
                 }
-                logger.Warn($"Ошибка загрузки страницы {CurrentPage}. StatusCode: {response?.StatusCode}");
+                Logger.Warn($"Ошибка загрузки страницы {currentPage}. StatusCode: {response?.StatusCode}");
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"Ошибка при загрузке страницы {CurrentPage}");
+                Logger.Error(ex, $"Ошибка при загрузке страницы {currentPage}");
             }
             return default;
         }
