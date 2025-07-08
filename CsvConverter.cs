@@ -6,17 +6,19 @@ namespace WarrantyParser
     {
         public static string ConvertToCsv(string line)
         {
-            string[] cells = line.Split('|').Select(cell => cell.Trim()).ToArray();
+            string[] cells = line.Split('|')
+                .Select(cell =>
+                {
+                    string trimmedCell = cell.Trim();
 
-            var escapedCells = cells.Select(cell =>
-            {
-                if (cell.Contains(",") || cell.Contains("\""))
-                    return $"\"{cell.Replace("\"", "\"\"")}\"";
-                else
-                    return cell;
-            });
+                    string escapedCell = trimmedCell.Replace("\"", "\"\"");
 
-            return string.Join(",", escapedCells);
+                    return $"\"{escapedCell}\""; // Добавление кавычек для корректного отображения данных
+                })
+                .ToArray();
+
+            // Соединение ячеек через запятую
+            return string.Join(",", cells);
         }
     }
 }

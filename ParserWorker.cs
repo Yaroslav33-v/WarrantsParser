@@ -25,7 +25,7 @@ namespace WarrantyParser
             _parser = parser;
         }
 
-        public async Task Worker()
+        public async Task Worker() // Метод, записывающий полученные данные в файл 
         {
             Logger.Info("Начало работы парсера");
             string csvFilePath = $"output_{DateTime.Now:yyyyMMdd}.csv";

@@ -18,7 +18,7 @@ namespace WarrantyParser
             Url = "https://www.wienerborse.at/en/warrants/?c10952-page={CurrentPage}&per-page=50";
         }
 
-        public async Task<string> GetSourceByPage(int currentPage)
+        public async Task<string> GetSourceByPage(int currentPage) // Получение данных со страницы
         {
             Logger.Trace($"Загрузка страницы {currentPage}");
             string currentUrl = Url.Replace("{CurrentPage}", currentPage.ToString());

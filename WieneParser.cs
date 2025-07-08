@@ -10,7 +10,7 @@ namespace WarrantyParser
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public string[] Parse(IHtmlDocument document)
+        public string[] Parse(IHtmlDocument document) // Получение данных из таблицы
         {
             List<string> list = new List<string>();
             var tables = document.QuerySelectorAll("tbody");
@@ -29,7 +29,7 @@ namespace WarrantyParser
             return list.ToArray();
         }
 
-        public string[] ParseNames(IHtmlDocument document)
+        public string[] ParseNames(IHtmlDocument document) // Получение имён из таблицы
         {
             List<string> list = new List<string>();
             var tables = document.QuerySelectorAll("thead");
@@ -42,7 +42,7 @@ namespace WarrantyParser
             return list.ToArray();
         }
 
-        public int FindLastPageNumber(IHtmlDocument document)
+        public int FindLastPageNumber(IHtmlDocument document) // Нахождение номера последней страницы
         {
             try
             {
