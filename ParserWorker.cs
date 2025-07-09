@@ -43,7 +43,7 @@ namespace WarrantyParser
 
                     foreach (string line in headers)
                     {
-                        sw.WriteLine(CsvConverter.ConvertToCsv(line));
+                        sw.WriteLine(line);
                     }
 
                     int pageCount = _parser.FindLastPageNumber(document);
@@ -60,7 +60,7 @@ namespace WarrantyParser
 
                         foreach (string line in rows)
                         {
-                            sw.WriteLine(CsvConverter.ConvertToCsv(line));
+                            sw.WriteLine(line);
                         }
                     }
                 }
@@ -70,6 +70,7 @@ namespace WarrantyParser
             {
                 Logger.Fatal(ex, "Критическая ошибка в работе парсера");
             }
+            Console.WriteLine($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
         }
 
         public async Task Start()

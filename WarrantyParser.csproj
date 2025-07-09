@@ -81,7 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CsvConverter.cs" />
     <Compile Include="HtmlLoader.cs" />
     <Compile Include="ParserWorker.cs" />
     <Compile Include="Program.cs" />

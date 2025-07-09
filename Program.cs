@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WarrantyParser
 {
@@ -7,6 +8,7 @@ namespace WarrantyParser
         static async Task Main()
         {
             ParserWorker parserWiene = new ParserWorker(new WieneParser());
+            Console.WriteLine("Начата работа программы");
             await parserWiene.Start();
         }
     }

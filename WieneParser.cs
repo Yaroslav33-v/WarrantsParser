@@ -22,7 +22,7 @@ namespace WarrantyParser
                 foreach (var row in rows)
                 {
                     var cells = row.QuerySelectorAll("td");
-                    string rowText = string.Join(" | ", cells.Select(cell => cell.TextContent.Trim()));
+                    string rowText = string.Join("\t", cells.Select(cell => cell.TextContent.Trim()));
                     list.Add(rowText);
                 }
             }
@@ -36,7 +36,7 @@ namespace WarrantyParser
             foreach (var table in tables)
             {
                 var headers = table.QuerySelectorAll("th");
-                string rowText = string.Join(" | ", headers.Select(header => header.TextContent.Trim()));
+                string rowText = string.Join("\t", headers.Select(header => header.TextContent.Trim()));
                 list.Add(rowText);
             }
             return list.ToArray();
