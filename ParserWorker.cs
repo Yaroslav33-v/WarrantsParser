@@ -10,7 +10,7 @@ namespace WarrantyParser
 {
     internal class ParserWorker
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly HtmlLoader _loader = new HtmlLoader();
         private WieneParser _parser;
 
@@ -27,19 +27,19 @@ namespace WarrantyParser
 
         public async Task Worker() // Метод, записывающий полученные данные в файл 
         {
-            Logger.Info("Начало работы парсера");
+            _logger.Info("Начало работы парсера");
             string csvFilePath = $"output_{DateTime.Now:yyyyMMdd}.csv";
 
             try
             {
                 using (var sw = new StreamWriter(csvFilePath, false, Encoding.UTF8))
                 {
-                    Logger.Debug("Загрузка первой страницы для заголовков");
+                    _logger.Debug("Загрузка первой страницы для заголовков");
                     string source = await _loader.GetSourceByPage(1);
                     IHtmlDocument document = await new HtmlParser().ParseDocumentAsync(source);
 
                     var headers = _parser.ParseNames(document);
-                    Logger.Debug($"Найдено {headers.Length} заголовков");
+                    _logger.Debug($"Найдено {headers.Length} заголовков");
 
                     foreach (string line in headers)
                     {
@@ -47,16 +47,16 @@ namespace WarrantyParser
                     }
 
                     int pageCount = _parser.FindLastPageNumber(document);
-                    Logger.Info($"Всего страниц для обработки: {pageCount}");
+                    _logger.Info($"Всего страниц для обработки: {pageCount}");
 
                     for (int i = 1; i <= pageCount; i++)
                     {
-                        Logger.Trace($"Обработка страницы {i}/{pageCount}");
+                        _logger.Trace($"Обработка страницы {i}/{pageCount}");
                         source = await _loader.GetSourceByPage(i);
                         document = await new HtmlParser().ParseDocumentAsync(source);
                         var rows = _parser.Parse(document);
 
-                        Logger.Debug($"На странице {i} найдено {rows.Length} строк");
+                        _logger.Debug($"На странице {i} найдено {rows.Length} строк");
 
                         foreach (string line in rows)
                         {
@@ -64,11 +64,11 @@ namespace WarrantyParser
                         }
                     }
                 }
-                Logger.Info($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
+                _logger.Info($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex, "Критическая ошибка в работе парсера");
+                _logger.Fatal(ex, "Критическая ошибка в работе парсера");
             }
             Console.WriteLine($"Данные успешно сохранены в {Path.GetFullPath(csvFilePath)}");
         }

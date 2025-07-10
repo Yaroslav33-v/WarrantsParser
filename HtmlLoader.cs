@@ -7,7 +7,7 @@ namespace WarrantyParser
 {
     internal class HtmlLoader
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         readonly HttpClient Client;
         readonly string Url;
 
@@ -20,7 +20,7 @@ namespace WarrantyParser
 
         public async Task<string> GetSourceByPage(int currentPage) // Получение данных со страницы
         {
-            Logger.Trace($"Загрузка страницы {currentPage}");
+            _logger.Trace($"Загрузка страницы {currentPage}");
             string currentUrl = Url.Replace("{CurrentPage}", currentPage.ToString());
 
             try
@@ -28,14 +28,14 @@ namespace WarrantyParser
                 HttpResponseMessage response = await Client.GetAsync(currentUrl);
                 if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Logger.Debug($"Успешно загружена страница {currentPage}");
+                    _logger.Debug($"Успешно загружена страница {currentPage}");
                     return await response.Content.ReadAsStringAsync();
                 }
-                Logger.Warn($"Ошибка загрузки страницы {currentPage}. StatusCode: {response?.StatusCode}");
+                _logger.Warn($"Ошибка загрузки страницы {currentPage}. StatusCode: {response?.StatusCode}");
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"Ошибка при загрузке страницы {currentPage}");
+                _logger.Error(ex, $"Ошибка при загрузке страницы {currentPage}");
             }
             return default;
         }

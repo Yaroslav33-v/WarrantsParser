@@ -8,7 +8,7 @@ namespace WarrantyParser
 {
     internal class WieneParser
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public string[] Parse(IHtmlDocument document) // Получение данных из таблицы
         {
@@ -53,12 +53,12 @@ namespace WarrantyParser
                     .ToList();
 
                 int lastPage = pageLinks.Any() ? pageLinks.Max() : 1;
-                Logger.Debug($"Найдено страниц: {lastPage}");
+                _logger.Debug($"Найдено страниц: {lastPage}");
                 return lastPage;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Ошибка при определении количества страниц");
+                _logger.Error(ex, "Ошибка при определении количества страниц");
                 return 1;
             }
         }
